@@ -18,9 +18,18 @@ def render_dashboard():
     for skills in df["skills"].dropna():
         all_skills.extend([s.strip() for s in str(skills).split(",") if s.strip()])
     if all_skills:
+        import matplotlib.pyplot as plt
         skill_counts = Counter(all_skills)
         st.markdown("### Most Common Skills")
-        st.bar_chart(pd.Series(skill_counts).sort_values(ascending=False).head(15))
+        top_skills = pd.Series(skill_counts).sort_values(ascending=False).head(15)
+        fig, ax = plt.subplots(figsize=(8, 6))
+        top_skills.sort_values().plot.barh(ax=ax, color="#4FC3F7")
+        ax.set_xlabel("Count", fontsize=12)
+        ax.set_ylabel("Skill", fontsize=12)
+        ax.set_title("Most Common Skills", fontsize=16, weight="bold")
+        ax.tick_params(axis='y', labelsize=11)
+        ax.grid(axis='x', linestyle='--', alpha=0.6)
+        st.pyplot(fig)
 
     # Recent JDs
     st.markdown("### Recent Job Descriptions")
