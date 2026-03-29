@@ -1,3 +1,11 @@
+def get_api_key_for_model(model_name):
+    if model_name == "OpenAI: gpt-oss-120b (free)":
+        api_key = st.secrets.get("GPT_OSS_120B_API_KEY") or os.getenv("GPT_OSS_120B_API_KEY")
+        if api_key:
+            return api_key
+        st.error("gpt-oss-120b API key not found. Add it to Streamlit secrets as GPT_OSS_120B_API_KEY.")
+        st.stop()
+    return OPENROUTER_API_KEY
 
 import os
 import streamlit as st
