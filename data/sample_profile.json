@@ -1,0 +1,108 @@
+{
+  "personal_info": {
+    "full_name": "Ammar Shahid",
+    "email": "muhammadammarshahid1@gmail.com",
+    "phone": "03146869377",
+    "location": "Lahore, Punjab",
+    "linkedin": "",
+    "github": "",
+    "portfolio": "ammarshahid.live"
+  },
+  "summary": "Results-driven Data Scientist and Computer Science graduate with hands-on experience in machine learning, deep learning, NLP, and data analytics. Proven track record of building production-ready ML pipelines, automating data workflows, and delivering actionable insights through dashboards and predictive models.",
+  "skills": {
+    "technical": ["Python", "MySQL", "ETL", "Machine Learning", "Data Visualization", "Deep Learning", "NLP", "MLOps", "Git"],
+    "tools": ["PyTorch", "Scikit-learn", "Matplotlib", "Pandas", "Plotly", "Docker", "Azure", "n8n", "Power BI", "Looker Studio", "LangChain", "Google Sheets"],
+    "soft": ["English (C1)", "German (B2)"]
+  },
+  "experience": [
+    {
+      "title": "Marketing Data Analyst",
+      "company": "Gabiona GmbH",
+      "location": "Remote",
+      "start_date": "2025-06",
+      "end_date": "Present",
+      "bullets": [
+        "Developed a live Looker Studio dashboard with Google Ads data via Coupler.io",
+        "Automated key marketing KPIs: ROAS, KUR, Revenue, Spend, Total Cost",
+        "Used Google Sheets for real-time metric calculations across 13 countries",
+        "Implemented dynamic filters, date range controls, and country-level breakdowns"
+      ]
+    },
+    {
+      "title": "Junior Data Scientist (Biomedical)",
+      "company": "Freelance / R&D Collaboration",
+      "location": "Remote",
+      "start_date": "2025-04",
+      "end_date": "Present",
+      "bullets": [
+        "Designed RAG pipeline using LangChain and OpenAI to generate health content from Semantic Scholar",
+        "Built rule-based and ML-powered recommendation logic using Python and scikit-learn",
+        "Automated NLP-based content workflows via n8n, integrating APIs like OpenFoodFacts and USDA",
+        "Defined backend logic for tip cards, nudges, and research-based video script generation",
+        "Collaborated closely on MVP design for Gen Z nutrition and wellness platform aligned with MAHA initiative"
+      ]
+    },
+    {
+      "title": "Data Science Intern",
+      "company": "Prodigy InfoTech",
+      "location": "Remote",
+      "start_date": "2024-06",
+      "end_date": "2024-09",
+      "bullets": [
+        "Developed time series models for stock price forecasting, improving prediction accuracy by 20%",
+        "Designed churn prediction models with ~95% accuracy, helping identify high-risk customers and improve retention strategies",
+        "Created Power BI dashboards for market insights and automated data pipelines to streamline analysis workflows",
+        "Developed sentiment analysis pipeline using Python (NLTK/spaCy), increasing model accuracy by 31% through pattern-aware text processing"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Computer Science",
+      "institution": "University of Management and Technology",
+      "graduation_date": "2025",
+      "gpa": "",
+      "highlights": []
+    }
+  ],
+  "projects": [
+    {
+      "name": "Brain Tumor MRI Classification using CNNs",
+      "description": "Deep learning model to classify MRI brain scans into 4 tumor categories",
+      "technologies": ["Python", "TensorFlow", "VGG16", "ResNet50", "EfficientNet"],
+      "url": "",
+      "bullets": [
+        "Developed a deep learning model to classify MRI brain scans into No Tumor, Glioma, Meningioma, and Pituitary Tumor categories with ~98% accuracy",
+        "Applied image normalization, augmentation, and balanced sampling to improve model performance",
+        "Trained multiple CNN architectures, including VGG16, ResNet50, EfficientNetB0, and EfficientNetB1",
+        "Evaluated models using Precision, Recall, F1-score, and Confusion Matrix to select the best-performing architecture"
+      ]
+    },
+    {
+      "name": "Air Quality Index (AQI) Prediction",
+      "description": "Forecasted Lahore's AQI using historical pollution and weather data",
+      "technologies": ["Python", "Scikit-learn", "Random Forest", "Feature Engineering"],
+      "url": "",
+      "bullets": [
+        "Forecasted Lahore's Air Quality Index (AQI) from 2019 to 2024 using historical pollution and weather data",
+        "Applied advanced feature engineering techniques including lag features, rolling averages, and weather variable interactions",
+        "Trained and compared multiple models; selected Random Forest Regressor as the top performer",
+        "Improved Random Forest R2 score from 0.8835 to 0.9579 through hyperparameter tuning"
+      ]
+    },
+    {
+      "name": "Earthquake Prediction & Resource Allocation System",
+      "description": "ML system for earthquake prediction, impact assessment, and resource allocation",
+      "technologies": ["Python", "LSTM", "Random Forest", "Plotly", "Folium"],
+      "url": "",
+      "bullets": [
+        "Built a machine learning system using USGS earthquake data for prediction, impact assessment, and resource allocation",
+        "Predicted earthquake magnitudes using an LSTM model, achieving RMSE of 1.24",
+        "Classified impact levels (Low, Moderate, Severe) with a Random Forest classifier, reaching 100% accuracy",
+        "Implemented a greedy algorithm to allocate emergency resources to high-impact areas",
+        "Created interactive visualizations: Time-series plots using Plotly, Impact-based geographic maps using Folium"
+      ]
+    }
+  ],
+  "certifications": []
+}
