@@ -1,6 +1,6 @@
 # Resume Maker
 
-AI-powered resume tailoring tool that customizes your resume for any job description and outputs an ATS-optimized PDF.
+Generate ATS-optimized resumes tailored to any job description in seconds — with scoring, keyword analysis, and ready-to-download PDFs.
 
 ## Features
 
