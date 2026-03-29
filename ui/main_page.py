@@ -1,9 +1,10 @@
 import streamlit as st
-from config.settings import MODELS, OPENROUTER_API_KEY
+from config.settings import MODELS, OPENROUTER_API_KEY, get_api_key_for_model
 from services.llm_service import tailor_resume
-from services.ats_scorer import compute_ats_score
+from services.ats_scorer import compute_ats_score, extract_keywords
 from services.pdf_generator import generate_resume_pdf
 from services.profile_manager import load_profile, validate_profile
+from services.usage_logger import log_usage
 from ui.components import render_ats_score
 
 
@@ -35,8 +36,9 @@ def render_main_page():
     generate = st.button("Generate Tailored Resume", type="primary", use_container_width=True)
 
     if generate:
-        if not OPENROUTER_API_KEY:
-            st.error("OpenRouter API key not found. Add it to your .env file.")
+        api_key = get_api_key_for_model(model_name)
+        if not api_key:
+            st.error("OpenRouter API key not found. Add it to your .env file or Streamlit secrets.")
             return
         if not job_description.strip():
             st.error("Please paste a job description.")
@@ -50,7 +52,7 @@ def render_main_page():
         # Generate
         with st.spinner("Analyzing job description and tailoring your resume..."):
             try:
-                tailored_data = tailor_resume(OPENROUTER_API_KEY, model_name, job_description, profile)
+                tailored_data = tailor_resume(api_key, model_name, job_description, profile)
                 st.session_state.tailored_data = tailored_data
             except Exception as e:
                 st.error(f"LLM Error: {e}")
@@ -68,6 +70,13 @@ def render_main_page():
             except Exception as e:
                 st.error(f"PDF Error: {e}")
                 return
+
+        # --- Logging usage ---
+        # Try to extract a JD title (first non-empty line or first 100 chars)
+        jd_title = next((line.strip() for line in job_description.splitlines() if line.strip()), job_description[:100])
+        # Extract skills from the JD
+        skills = extract_keywords(job_description)
+        log_usage(jd_title, skills)
 
         st.success("Resume generated!")
 
