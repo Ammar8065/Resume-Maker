@@ -3,4 +3,5 @@ __pycache__/
 *.pyc
 output/*.pdf
 data/profile.json
+data/usage_log.csv
 .streamlit/

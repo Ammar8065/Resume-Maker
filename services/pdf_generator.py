@@ -6,23 +6,25 @@ from config.settings import OUTPUT_DIR
 def sanitize(text):
     """Replace Unicode characters that Helvetica can't render with ASCII equivalents."""
     replacements = {
-        "\u2018": "'", "\u2019": "'",  # smart single quotes
-        "\u201c": '"', "\u201d": '"',  # smart double quotes
-        "\u2013": "-", "\u2014": "-",  # en/em dash
-        "\u2026": "...",               # ellipsis
-        "\u2022": "-",                 # bullet
-        "\u00a0": " ",                 # non-breaking space
-        "\u2032": "'",                 # prime
-        "\u2033": '"',                 # double prime
-        "\u00b2": "2",                 # superscript 2 (R²)
-        "\u00b3": "3",                 # superscript 3
-        "\u2248": "~",                 # approximately
-        "\u2264": "<=",               # less than or equal
-        "\u2265": ">=",               # greater than or equal
+        "\u2018": "'",
+        "\u2019": "'",
+        "\u201c": '"',
+        "\u201d": '"',
+        "\u2013": "-",
+        "\u2014": "-",
+        "\u2026": "...",
+        "\u2022": "-",
+        "\u00a0": " ",
+        "\u2032": "'",
+        "\u2033": '"',
+        "\u00b2": "2",
+        "\u00b3": "3",
+        "\u2248": "~",
+        "\u2264": "<=",
+        "\u2265": ">=",
     }
     for old, new in replacements.items():
         text = text.replace(old, new)
-    # Strip any remaining non-latin-1 characters
     return text.encode("latin-1", errors="replace").decode("latin-1")
 
 
@@ -35,7 +37,6 @@ class ResumePDF(FPDF):
         self.set_font("Helvetica", "B", 11)
         self.set_text_color(30, 30, 30)
         self.cell(0, 7, title.upper(), new_x="LMARGIN", new_y="NEXT")
-        # Draw a thin line under the heading
         y = self.get_y()
         self.set_draw_color(80, 80, 80)
         self.set_line_width(0.3)
@@ -91,14 +92,12 @@ def generate_resume_pdf(tailored_data, personal_info):
     pdf.set_margins(18, 15, 18)
     pdf.set_y(15)
 
-    # ---- Header: Name ----
     name = personal_info.get("full_name", "Your Name")
     pdf.set_font("Helvetica", "B", 18)
     pdf.set_text_color(20, 20, 20)
     pdf.cell(0, 9, sanitize(name), align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(1)
 
-    # ---- Contact Info Line ----
     contact_parts = []
     if personal_info.get("email"):
         contact_parts.append(personal_info["email"])
@@ -120,14 +119,12 @@ def generate_resume_pdf(tailored_data, personal_info):
         pdf.cell(0, 5, sanitize(contact_line), align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(4)
 
-    # ---- Professional Summary ----
     summary = tailored_data.get("tailored_summary", "")
     if summary:
         pdf.section_heading("Professional Summary")
         pdf.body_text(summary)
         pdf.ln(2)
 
-    # ---- Experience ----
     experience = tailored_data.get("experience", [])
     if experience:
         pdf.section_heading("Experience")
@@ -149,7 +146,6 @@ def generate_resume_pdf(tailored_data, personal_info):
                 pdf.ln(2)
         pdf.ln(2)
 
-    # ---- Skills ----
     skills = tailored_data.get("selected_skills", {})
     has_skills = False
     if isinstance(skills, dict):
@@ -174,7 +170,6 @@ def generate_resume_pdf(tailored_data, personal_info):
             pdf.body_text(", ".join(skills))
         pdf.ln(2)
 
-    # ---- Projects ----
     projects = tailored_data.get("projects", [])
     if projects:
         pdf.section_heading("Projects")
@@ -200,7 +195,6 @@ def generate_resume_pdf(tailored_data, personal_info):
                 pdf.ln(1)
         pdf.ln(2)
 
-    # ---- Education ----
     education = tailored_data.get("education", [])
     if education:
         pdf.section_heading("Education")
@@ -210,18 +204,16 @@ def generate_resume_pdf(tailored_data, personal_info):
             grad_date = edu.get("graduation_date", "")
             gpa = edu.get("gpa", "")
 
-            left = degree
-            pdf.entry_header(left, grad_date)
+            pdf.entry_header(degree, grad_date)
             sub = institution
             if gpa:
                 sub += f" | GPA: {gpa}"
             pdf.entry_subheader(sub)
 
-            for h in edu.get("highlights", []):
-                pdf.bullet_point(h)
+            for highlight in edu.get("highlights", []):
+                pdf.bullet_point(highlight)
         pdf.ln(2)
 
-    # ---- Certifications ----
     certs = tailored_data.get("certifications", [])
     if certs:
         pdf.section_heading("Certifications")
@@ -235,10 +227,10 @@ def generate_resume_pdf(tailored_data, personal_info):
             pdf.entry_header(line, date)
             pdf.ln(1)
 
-    # Save PDF
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     output_path = os.path.join(OUTPUT_DIR, "resume.pdf")
-    pdf.output(output_path)
+    pdf_bytes = bytes(pdf.output())
+    with open(output_path, "wb") as f:
+        f.write(pdf_bytes)
 
-    # Return bytes for download (Streamlit needs bytes, not bytearray)
-    return bytes(pdf.output())
+    return pdf_bytes

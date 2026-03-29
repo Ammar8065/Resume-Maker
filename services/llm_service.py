@@ -16,7 +16,7 @@ Given a candidate's profile data and a target job description, produce a tailore
 2. **Rewrites bullet points** to emphasize relevant experience using strong action verbs and quantified achievements
 3. **Selects the most relevant** skills, projects, and certifications for this specific role
 4. **Crafts a professional summary** tailored to the job description
-5. **Maintains honesty** — enhance presentation but never fabricate experience or skills
+5. **Maintains honesty** - enhance presentation but never fabricate experience or skills
 
 Rules for ATS optimization:
 - Use standard section headings: Summary, Experience, Skills, Education, Projects, Certifications
@@ -105,7 +105,6 @@ Analyze the job description, then produce a tailored resume from the candidate's
     content = message.content
 
     if not content:
-        # Some models return a refusal instead of content
         refusal = getattr(message, "refusal", None)
         if refusal:
             raise ValueError(f"Model refused the request: {refusal}")
@@ -113,7 +112,6 @@ Analyze the job description, then produce a tailored resume from the candidate's
 
     content = content.strip()
 
-    # Strip markdown code fences if the model wraps the response
     if content.startswith("```"):
         lines = content.split("\n")
         lines = lines[1:]
@@ -124,7 +122,6 @@ Analyze the job description, then produce a tailored resume from the candidate's
     try:
         return json.loads(content)
     except json.JSONDecodeError:
-        # Try to extract JSON from the response if there's surrounding text
         match = re.search(r"\{[\s\S]*\}", content)
         if match:
             return json.loads(match.group())

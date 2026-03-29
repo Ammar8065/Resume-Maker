@@ -1,5 +1,5 @@
 import streamlit as st
-from config.settings import MODELS, OPENROUTER_API_KEY, get_api_key_for_model
+from config.settings import MODELS, get_api_key_error_message, get_api_key_for_model
 from services.llm_service import tailor_resume
 from services.ats_scorer import compute_ats_score, extract_keywords
 from services.pdf_generator import generate_resume_pdf
@@ -38,7 +38,7 @@ def render_main_page():
     if generate:
         api_key = get_api_key_for_model(model_name)
         if not api_key:
-            st.error("OpenRouter API key not found. Add it to your .env file or Streamlit secrets.")
+            st.error(get_api_key_error_message(model_name))
             return
         if not job_description.strip():
             st.error("Please paste a job description.")

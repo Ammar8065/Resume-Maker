@@ -1,5 +1,4 @@
 import re
-from collections import Counter
 
 # Common filler words to ignore
 STOP_WORDS = {
@@ -81,24 +80,20 @@ ACTION_VERBS = {
 
 
 def extract_keywords(text):
-    """Extract meaningful keywords from text — technical terms, tools, and skills."""
-    # Clean punctuation at word boundaries but keep internal special chars (c++, c#, a/b)
+    """Extract meaningful keywords from text - technical terms, tools, and skills."""
     text_lower = re.sub(r"[.,;:!?()]+(?=\s|$)", " ", text.lower())
     text_lower = re.sub(r"\s+", " ", text_lower).strip()
     found = set()
 
-    # 1. Match known technical terms (multi-word first, then single-word)
     for term in sorted(TECHNICAL_TERMS, key=len, reverse=True):
         if term in text_lower:
             found.add(term)
 
-    # 2. Extract single meaningful words not in stop words
     words = re.findall(r"[a-z#+./]+", text_lower)
-    for w in words:
-        if w not in STOP_WORDS and len(w) > 2 and w not in found:
-            found.add(w)
+    for word in words:
+        if word not in STOP_WORDS and len(word) > 2 and word not in found:
+            found.add(word)
 
-    # 3. Remove overly generic words
     generic = {
         "the", "and", "you", "use", "get", "set", "run", "see", "let",
         "put", "top", "end", "day", "lot", "big", "old", "own", "try",
@@ -114,17 +109,14 @@ def extract_keywords(text):
     found -= generic
     found -= STOP_WORDS
 
-    # 4. Remove single-word fragments that are already part of a multi-word match
-    #    e.g. remove "deep" if "deep learning" is present, "scikit" if "scikit-learn"
-    multi_word = {kw for kw in found if " " in kw or "/" in kw or "-" in kw}
+    multi_word = {keyword for keyword in found if " " in keyword or "/" in keyword or "-" in keyword}
     fragments_to_remove = set()
-    for kw in list(found):
-        if " " not in kw and "/" not in kw and "-" not in kw:
-            for mw in multi_word:
-                # Split on spaces, hyphens, and slashes to catch all fragments
-                parts = re.split(r"[\s\-/]", mw)
-                if kw in parts:
-                    fragments_to_remove.add(kw)
+    for keyword in list(found):
+        if " " not in keyword and "/" not in keyword and "-" not in keyword:
+            for multi_word_keyword in multi_word:
+                parts = re.split(r"[\s\-/]", multi_word_keyword)
+                if keyword in parts:
+                    fragments_to_remove.add(keyword)
                     break
     found -= fragments_to_remove
 
@@ -138,8 +130,8 @@ def compute_keyword_score(jd_text, resume_text):
     if not jd_keywords:
         return 100, [], []
 
-    matched = [kw for kw in jd_keywords if kw in resume_lower]
-    missing = [kw for kw in jd_keywords if kw not in resume_lower]
+    matched = [keyword for keyword in jd_keywords if keyword in resume_lower]
+    missing = [keyword for keyword in jd_keywords if keyword not in resume_lower]
 
     score = int((len(matched) / len(jd_keywords)) * 100) if jd_keywords else 100
     return score, sorted(matched), sorted(missing)
@@ -162,8 +154,8 @@ def compute_section_score(resume_sections):
         if resume_sections.get(section):
             present.append(section)
 
-    req_score = (len([s for s in required if s in present]) / len(required)) * 80
-    opt_score = (len([s for s in optional if s in present]) / len(optional)) * 20
+    req_score = (len([section for section in required if section in present]) / len(required)) * 80
+    opt_score = (len([section for section in optional if section in present]) / len(optional)) * 20
 
     return int(req_score + opt_score), present, missing
 
@@ -172,12 +164,11 @@ def compute_content_quality_score(resume_text, experience_bullets):
     suggestions = []
     scores = []
 
-    # Check action verbs
     if experience_bullets:
         action_count = sum(
-            1 for b in experience_bullets
-            if b.strip().split()[0].lower().rstrip("ed,s") in ACTION_VERBS
-            or b.strip().split()[0].lower() in ACTION_VERBS
+            1 for bullet in experience_bullets
+            if bullet.strip().split()[0].lower().rstrip("ed,s") in ACTION_VERBS
+            or bullet.strip().split()[0].lower() in ACTION_VERBS
         )
         verb_ratio = action_count / len(experience_bullets)
         scores.append(verb_ratio * 100)
@@ -187,9 +178,8 @@ def compute_content_quality_score(resume_text, experience_bullets):
         scores.append(0)
         suggestions.append("Add work experience with achievement bullets")
 
-    # Check for quantified achievements (numbers, percentages)
     if experience_bullets:
-        quant_count = sum(1 for b in experience_bullets if re.search(r"\d+", b))
+        quant_count = sum(1 for bullet in experience_bullets if re.search(r"\d+", bullet))
         quant_ratio = quant_count / len(experience_bullets)
         scores.append(quant_ratio * 100)
         if quant_ratio < 0.5:
@@ -197,14 +187,13 @@ def compute_content_quality_score(resume_text, experience_bullets):
     else:
         scores.append(0)
 
-    # Check resume length (word count)
     word_count = len(resume_text.split())
     if word_count < 150:
         scores.append(40)
-        suggestions.append("Resume content is too short — add more detail")
+        suggestions.append("Resume content is too short - add more detail")
     elif word_count > 1000:
         scores.append(70)
-        suggestions.append("Resume may be too long — consider trimming to 1-2 pages")
+        suggestions.append("Resume may be too long - consider trimming to 1-2 pages")
     else:
         scores.append(100)
 
@@ -212,7 +201,6 @@ def compute_content_quality_score(resume_text, experience_bullets):
 
 
 def compute_ats_score(job_description, tailored_data):
-    # Build full resume text from tailored data
     resume_parts = []
     resume_parts.append(tailored_data.get("tailored_summary", ""))
 
@@ -262,7 +250,7 @@ def compute_ats_score(job_description, tailored_data):
     kw_score, matched, missing = compute_keyword_score(job_description, resume_text)
     section_score, present_sections, missing_sections = compute_section_score(resume_sections)
     content_score, content_suggestions = compute_content_quality_score(resume_text, experience_bullets)
-    format_score = 100  # Always perfect since we generate the PDF
+    format_score = 100
 
     overall = int(
         kw_score * 0.40

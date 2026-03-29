@@ -5,13 +5,12 @@ from ui.dashboard import render_dashboard
 
 st.set_page_config(
     page_title="Resume Maker",
-    page_icon="📄",
     layout="wide",
 )
 
-generator = st.Page(render_main_page, title="Resume Generator", icon="📄", default=True)
-profile = st.Page(render_profile_page, title="Edit Profile", icon="✏️")
-dashboard = st.Page(render_dashboard, title="Dashboard", icon="📊")
+generator = st.Page(render_main_page, title="Resume Generator", default=True)
+profile = st.Page(render_profile_page, title="Edit Profile")
+dashboard = st.Page(render_dashboard, title="Dashboard")
 
 nav = st.navigation([generator, profile, dashboard])
 nav.run()
