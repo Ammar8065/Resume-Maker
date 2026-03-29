@@ -28,6 +28,7 @@ MODELS = {
     "MiniMax M2.5": "minimax/minimax-m2.5:free",
     "Qwen3 Next 80B A3B Instruct": "qwen/qwen3-next-80b-a3b-instruct:free",
     "NVIDIA Nemotron 3 Super": "nvidia/nemotron-3-super-120b-a12b:free",
+    "OpenAI: gpt-oss-120b (free)": "openai/gpt-oss-120b:free",
 }
 
 PROFILE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "profile.json")
