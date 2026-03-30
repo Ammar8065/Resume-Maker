@@ -184,6 +184,19 @@ def extract_keywords(text):
         "teach", "offer", "consider", "appear", "buy", "wait", "serve",
         "die", "expect", "stay", "fall", "read", "involving", "welcome",
         "junior", "senior", "lead", "principal", "level", "r",
+        # JD boilerplate noise - too generic to be meaningful keywords
+        "cases", "clean", "concepts", "databases", "degree", "engineers",
+        "entry", "environment", "experienced", "familiarity", "field",
+        "frameworks", "experiment", "tools", "skills", "projects",
+        "systems", "solutions", "tasks", "processes", "areas", "ideas",
+        "methods", "approach", "industry", "practices", "challenges",
+        "initiatives", "technologies", "techniques", "expertise",
+        "backgrounds", "candidates", "applicants", "professionals",
+        "applications", "products", "services", "organizations", "groups",
+        "analysts", "scientists", "engineers", "developers", "researchers",
+        "stakeholders", "clients", "users", "customers", "partners",
+        # Fragment of "a/b testing" - already covered by the full term
+        "a/b",
     }
     found -= generic
     found -= STOP_WORDS
@@ -204,11 +217,22 @@ def extract_keywords(text):
 
 def _keyword_in_text(keyword, resume_normalized):
     """Check if a keyword (or any of its aliases) appears in the normalized resume text."""
-    if normalize_text(keyword) in resume_normalized:
+    kw_norm = normalize_text(keyword)
+    if kw_norm in resume_normalized:
         return True
+
+    # Alias matching
     for alias in KEYWORD_ALIASES.get(keyword, []):
         if normalize_text(alias) in resume_normalized:
             return True
+
+    # Singular/plural normalization for single-word keywords
+    if " " not in kw_norm:
+        if kw_norm.endswith("s") and len(kw_norm) > 3 and kw_norm[:-1] in resume_normalized:
+            return True
+        if kw_norm + "s" in resume_normalized:
+            return True
+
     return False
 
 
